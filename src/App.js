@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import './css/reset.css';
+import UserContext from "./contexts/UserContext";
+import { useState } from "react";
+
+import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
+
 
 function App() {
+
+  const [token, setToken] = useState("");
+  const contextValue = { token, setToken };
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={ contextValue } >
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<SignIn />} />
+          <Route path="/cadastro" element={<SignUp />} />
+          {/* <Route path="/home" element={<Home />} />
+          <Route path="/entrada" element={<NewCredit />} />
+          <Route path="/saida" element={<NewDebit />} /> */}
+        </Routes>
+      </BrowserRouter>
+    </UserContext.Provider>
   );
 }
 
