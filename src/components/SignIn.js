@@ -33,7 +33,7 @@ export default function SignIn() {
     function login(response) {
         console.log(response)
         setToken(response.data.token)
-        navigate('/hoje')
+        navigate('/home')
     }
 
     function treatError(err) {
