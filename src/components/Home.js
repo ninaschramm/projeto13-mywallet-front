@@ -10,6 +10,7 @@ export default function Home() {
     const [entryList, setEntryList] = useState([]);
     const [saldo, setSaldo] = useState(0);
     const [showList, setShowList] = useState(false);
+    const [colorSaldo, setColorSaldo] = useState("");
 
 
     const headers = {
@@ -23,13 +24,16 @@ export default function Home() {
 function handleList(response) {
     setEntryList(response.data);
     setName(response.data[0].username);
+    if (EntryList.length !== 0) {
+        setShowList(true)
+    }
     let s = 0;
     for (let v of entryList) {
         if (v.type === "credit") {
-            s += v.value
+            s += parseFloat(v.value)
         }
         else if (v.type === "debit") {
-            s -= v.value
+            s -= parseFloat(v.value)
         }        
     }
     setSaldo(s)
@@ -42,13 +46,15 @@ return (
            <Link to="/"> <ion-icon name="exit-outline"></ion-icon> </Link>
         </Title>
         <EntryList>
-            { showList ? 
-            entryList.map((entry, value) => <Entry> <Date key={value}>  {entry.date} </Date> 
+            { showList ? <>
+            <div>
+    {        entryList.map((entry, value) => <Entry> <Date key={value}>  {entry.date} </Date> 
             <Description key={value}>{entry.description}</Description>
-            <Value key={value} color={`${entry.type}`}> {entry.value} </Value></Entry>)
+            <Value key={value} color={`${entry.type}`}> {entry.value} </Value></Entry>)}</div>
+            <Saldo><div>SALDO</div> <div><p color={`${colorSaldo}`}>{saldo}</p></div></Saldo></>
             :
             <NoList>Não há registros de<br></br> entrada ou saída</NoList> }
-            <Saldo>SALDO {saldo}</Saldo>
+            
         </EntryList> 
         <Reqs>
             <Link to="/entrada"><NewEntry><ion-icon name="add-circle-outline"></ion-icon> <p>Nova <br></br>Entrada</p></NewEntry></Link>
@@ -69,6 +75,8 @@ const handleColor = color => {
          return "#03AC00";
         case "debit":
             return "#C70000";
+        case "default":
+            return "#000000";
     }
   };
 
@@ -122,6 +130,9 @@ const EntryList = styled.div `
     border-radius: 5px;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    position: relative;
 `
 
 const NoList = styled.div `
@@ -142,7 +153,7 @@ const NoList = styled.div `
 `
 
 const Entry = styled.div `
-    height: 171px;
+    height: 20px;
     display: flex;
     justify-content: space-evenly;
     margin: 2px 5px;
@@ -189,7 +200,11 @@ const Saldo = styled.div`
     font-weight: 700;
     font-size: 17px;
     line-height: 20px;
-    color:${({ color }) => handleColor(color)};
+    display: flex;
+    padding: 10px;
+    color: #000000;
+    bottom: 30px;
+    justify-content: space-between;
 `
 
 const NewEntry = styled.div `
