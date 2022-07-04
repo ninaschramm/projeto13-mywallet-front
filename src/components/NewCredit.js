@@ -25,7 +25,7 @@ export default function NewCredit() {
         setLoading(true)
         setIsDisabled(true)
 
-        let numValue = parseFloat(value)
+        let numValue = parseFloat(value.replace(",", ".")).toFixed(2);
 
         const entry = {
             value: `${numValue}`,

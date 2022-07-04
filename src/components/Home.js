@@ -24,19 +24,30 @@ export default function Home() {
 function handleList(response) {
     setEntryList(response.data);
     setName(response.data[0].username);
-    if (EntryList.length !== 0) {
+    if (entryList.length != 0) {
         setShowList(true)
     }
-    let s = 0;
-    for (let v of entryList) {
-        if (v.type === "credit") {
-            s += parseFloat(v.value)
-        }
-        else if (v.type === "debit") {
-            s -= parseFloat(v.value)
-        }        
+    let s = 0.00;
+
+    const positive = entryList.filter((v) => v.type == "credit");
+    const negative = entryList.filter((v) => v.type == "debit");
+    
+    for (let elt of positive) {
+        s += parseFloat(elt.value)
     }
-    setSaldo(s)
+    for (let elt of negative) {
+        s -= parseFloat(elt.value)
+    }
+
+    setSaldo(s.toFixed(2))
+}
+
+function isPositive(value) {
+    return value > 0;
+}
+
+function isNegative(value) {
+    return value < 0;
 }
 
 return (
@@ -130,13 +141,16 @@ const EntryList = styled.div `
     border-radius: 5px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 10px;
-    position: relative;
+    justify-content: space-between;
+    padding: 15px 10px;
+
+    div {
+        gap: 10px;
+    }
 `
 
 const NoList = styled.div `
-    width: 326px;
+    width: 300px;
     height: 446px;
     background: #FFFFFF;
     border-radius: 5px;
