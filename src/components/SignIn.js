@@ -25,15 +25,21 @@ export default function SignIn() {
             password: `${password}`
         }
 
-        const promise = axios.post("http://localhost:5009/signin", user)
+        const promise = axios.post("https://ninaschramm-mywallet.herokuapp.com/signin", user)
         promise.then(response => login(response))
         promise.catch(err => treatError(err))
     }
 
     function login(response) {
-        console.log(response)
-        setToken(response.data.token)
-        navigate('/hoje')
+        console.log(response.data)
+        setToken(response.data)
+        console.log(token)
+        navigate('/home')
+    }
+
+    function getParams({route, navigate}) {
+        setEmail(route.params.email);
+        setPassword(route.params.password)
     }
 
     function treatError(err) {
@@ -45,8 +51,8 @@ export default function SignIn() {
     return (
         <Container>           
             <h1>My Wallet</h1>
-            <Form>
-                <form action="#" onSubmit={signInUser}>            
+            <Form>                
+                <form action="#" onSubmit={signInUser} onLoad={getParams}>            
                     <input required disabled={isDisabled} type="email" id="emailInput" placeholder='E-mail' value={email} onChange={(e) => setEmail(e.target.value)} />              
                     <input required disabled={isDisabled} type="password" id="passInput" placeholder='Senha' value={password} onChange={(e) => setPassword(e.target.value)} />
                     <button disabled={isDisabled} type="submit">

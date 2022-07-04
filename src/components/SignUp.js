@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ export default function SignUp() {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confPassword, setConfPassword] = useState("");
     const [name, setName] = useState("");
     const [isDisabled, setIsDisabled] = useState(false);
     const navigate = useNavigate();
@@ -21,17 +22,30 @@ export default function SignUp() {
         const user = {
             email: `${email}`,
             name: `${name}`,
-            password: `${password}`
+            password: `${password}`,
+            confirmPassword: `${confPassword}`
         }
 
-        const promise = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up", user)
-        promise.then(() => navigate('/'), {email: `${email}`,
-        name: `${name}`,})
+       if (confPassword === password) {
+        const promise = axios.post("https://ninaschramm-mywallet.herokuapp.com/signup", user)
+        promise.then(createUser)
         promise.catch(err => treatError(err))
+       }
+       else {
+        alert("A confirmação de senha não confere!")
+        setIsDisabled(false)
+        setLoading(false)
+       }
+    }
+
+    function createUser() {
+        alert("Usuário cadastrado com sucesso")
+        navigate('/', {email: `${email}`,
+        name: `${name}`,})
     }
 
     function treatError(err) {
-        alert(`${err.response.data.message} Tente novamente!`)
+        alert(`${err.response.data}. Tente novamente!`)
         setIsDisabled(false)
         setLoading(false)
     }
@@ -39,11 +53,13 @@ export default function SignUp() {
 
     return (
         <Container>
+            <h1>My Wallet</h1>
             <Form>
                 <form action="#" onSubmit={registerUser}>            
-                    <input disabled={isDisabled} type="email" id="emailInput" placeholder='email' value={email} required onChange={(e) => setEmail(e.target.value)} />              
-                    <input disabled={isDisabled} type="password" id="passInput" placeholder='senha' value={password} required onChange={(e) => setPassword(e.target.value)} />  
-                    <input disabled={isDisabled} type="text" id="nameInput" placeholder='nome' value={name} required onChange={(e) => setName(e.target.value)} />  
+                    <input disabled={isDisabled} type="text" id="nameInput" placeholder='Nome' value={name} required onChange={(e) => setName(e.target.value)} /> 
+                    <input disabled={isDisabled} type="email" id="emailInput" placeholder='E-mail' value={email} required onChange={(e) => setEmail(e.target.value)} />              
+                    <input disabled={isDisabled} type="password" id="passInput" placeholder='Senha' value={password} required onChange={(e) => setPassword(e.target.value)} />  
+                    <input disabled={isDisabled} type="password" id="confPassInput" placeholder='Confirme a senha' value={confPassword} required onChange={(e) => setConfPassword(e.target.value)} /> 
                     <button disabled={isDisabled} type="submit">  { loading ? 
                           <div className="loader">
                           <ThreeDots
@@ -51,7 +67,7 @@ export default function SignUp() {
                       </div> : "Cadastrar" }</button>
                 </form>
             </Form>
-            <Link to="/">Já tem uma conta? Faça login!</Link>
+            <Link to="/">Já tem uma conta? Entre agora!</Link>
         </Container>
     )
 }
@@ -59,79 +75,86 @@ export default function SignUp() {
 const Container = styled.div` 
     display: flex;
     flex-direction: column;   
+    background: #8C11BE;
     align-items: center;
+    justify-content: center;
     width: 100%;
-    max-width: 390px;
     height: 100vh;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    color: #FFFFFF;
 
-    img {
-        margin-top: 70px;
-    }
+        h1 {
+            font-family: 'Saira Stencil One';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 50px;
+        }    
 
-    a {
-        font-family: 'Lexend Deca';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 13.976px;
-        line-height: 17px;
-        text-align: center;
-        text-decoration-line: underline;
-        color: #52B6FF;
-    }
-    
+        a, a:visited {
+            text-decoration: none;
+            color: #FFFFFF;
+        }
 `
 
 const Form = styled.div` 
 
-    margin: 30px 0 25px;
+margin: 30px 0 25px;
 
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
-        font-family: 'Lexend Deca';
-        font-style: normal;
-        font-weight: 400;
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 13px;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 23px;
+    color: #000000;
 
-        input {
+    input {
 
-            box-sizing: border-box;
-            padding: 0 10px;
-            width: 303px;
-            height: 45px;
-            background: #FFFFFF;
-            border: 1px solid #D5D5D5;
-            border-radius: 5px;
-            font-size: 19.976px;
-            line-height: 25px;
-            color: #666666;
+        box-sizing: border-box;
+        padding: 0 10px;
+        width: 326px;
+        height: 58px;
+        background: #FFFFFF;
+        border: 0px;
+        border-radius: 5px;
+        font-size: 20px;
+        line-height: 23px;
+        color: #000000;
 
-            ::placeholder {
+        ::placeholder {
 
-                color: #DBDBDB;
-            }
-            }
-
-        
-
-        button {
-            width: 303px;
-            height: 45px;
-            background: #52B6FF;
-            border-radius: 4.63636px;
-            border: solid 1px #52B6FF;            
-            font-size: 20.976px;
-            line-height: 26px;  
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            align-self: center;
-            color: #FFFFFF;
+            color: #000000;
+        }
         }
 
-        button:hover:enabled {
-            filter: brightness(115%);
-            cursor: pointer;
-            }
+    
+    button {
+        width: 326px;
+        height: 46px;
+        background: #A328D6;
+        border-radius: 5px;
+        border: 0px;            
+        font-size: 20px;
+        line-height: 23px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-self: center;
+        color: #FFFFFF;
     }
+
+    button:hover:enabled {
+        filter: brightness(115%);
+        cursor: pointer;
+        }
+
+}
 `
