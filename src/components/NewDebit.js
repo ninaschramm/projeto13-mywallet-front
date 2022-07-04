@@ -26,8 +26,10 @@ export default function NewDebit() {
         setLoading(true)
         setIsDisabled(true)
 
+        let numValue = parseFloat(value.replace(",", ".")).toFixed(2);
+
         const entry = {
-            value: `${value}`,
+            value: `${numValue}`,
             description: `${description}`,
             type: "debit",
             date: `${date}`

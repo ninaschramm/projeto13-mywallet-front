@@ -24,7 +24,7 @@ export default function Home() {
 function handleList(response) {
     setEntryList(response.data);
     setName(response.data[0].username);
-    if (entryList.length != 0) {
+    if (response.data.length != 0) {
         setShowList(true)
     }
     let s = 0.00;
@@ -39,6 +39,12 @@ function handleList(response) {
         s -= parseFloat(elt.value)
     }
 
+    if (s > 0) {
+        setColorSaldo("credit")
+    }  
+    if (s < 0) {
+        setColorSaldo("debit")
+    }
     setSaldo(s.toFixed(2))
 }
 
@@ -59,9 +65,9 @@ return (
         <EntryList>
             { showList ? <>
             <div>
-    {        entryList.map((entry, value) => <Entry> <Date key={value}>  {entry.date} </Date> 
-            <Description key={value}>{entry.description}</Description>
-            <Value key={value} color={`${entry.type}`}> {entry.value} </Value></Entry>)}</div>
+    {        entryList.map((entry, value) => <Entry key={value}> <Date>  {entry.date} </Date> 
+            <Description>{entry.description}</Description>
+            <Value color={`${entry.type}`}> {entry.value} </Value></Entry>)}</div>
             <Saldo><div>SALDO</div> <div><p color={`${colorSaldo}`}>{saldo}</p></div></Saldo></>
             :
             <NoList>Não há registros de<br></br> entrada ou saída</NoList> }
@@ -219,6 +225,10 @@ const Saldo = styled.div`
     color: #000000;
     bottom: 30px;
     justify-content: space-between;
+
+    p { 
+        color: ${({ color }) => handleColor(color)};
+    }
 `
 
 const NewEntry = styled.div `
